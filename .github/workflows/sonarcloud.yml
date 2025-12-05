@@ -1,0 +1,48 @@
+name: SonarCloud Analysis
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  sonarcloud:
+    name: SonarCloud Scan
+    runs-on: ubuntu-latest
+
+    steps:
+      # Checkout code
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0   # Required for full PR analysis
+
+      # Setup Node (Hydrogen uses Node 18+)
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+
+      # Install dependencies
+      - name: Install dependencies
+        run: npm install
+
+      # (Optional) Run tests & generate coverage (only if you add tests)
+      - name: Run tests
+        run: npm test --if-present
+
+      # Run SonarCloud Scan
+      - name: SonarCloud Scan
+        uses: SonarSource/sonarcloud-github-action@v2
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          args: >
+            -Dsonar.projectKey=arymangupta01_aryman-storefront
+            -Dsonar.organization=arymangupta01
+            -Dsonar.sources=.
+            -Dsonar.exclusions=**/node_modules/**,**/dist/**,**/.react-router/**,**/.shopify/**
+            -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info
