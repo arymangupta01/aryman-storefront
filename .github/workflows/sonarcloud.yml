@@ -1,4 +1,4 @@
-name: SonarCloud Analysis
+name: SonarCloud Scan
 
 on:
   push:
@@ -8,41 +8,43 @@ on:
     types: [opened, synchronize, reopened]
 
 jobs:
-  sonarcloud:
+  scan:
     name: SonarCloud Scan
     runs-on: ubuntu-latest
 
     steps:
-      # Checkout code
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0   # Required for full PR analysis
+          fetch-depth: 0
 
-      # Setup Node (Hydrogen uses Node 18+)
+      - name: Custom Rule Check (block 'aryman')
+        run: |
+          if grep -Rni "aryman" .; then
+            echo "❌ Restricted keyword 'aryman' found in code. Failing pipeline."
+            exit 1
+          else
+            echo "✅ No restricted keywords found."
+          fi
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 18
+          node-version: '20'
 
-      # Install dependencies
       - name: Install dependencies
-        run: npm install --ignore-scripts
+        run: npm install
 
-      # (Optional) Run tests & generate coverage (only if you add tests)
       - name: Run tests
         run: npm test --if-present
 
-      # Run SonarCloud Scan
-      - name: SonarCloud Scan
-        uses: SonarSource/sonarcloud-github-action@ffc3010689be73b8e5ae0c57ce35968afd7909e8
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Run SonarCloud Scan
+        uses: SonarSource/sonarcloud-github-action@v5.0.0
         with:
           args: >
             -Dsonar.projectKey=arymangupta01_aryman-storefront
             -Dsonar.organization=arymangupta01
             -Dsonar.sources=.
-            -Dsonar.exclusions=**/node_modules/**,**/dist/**,**/.react-router/**,**/.shopify/**
-            -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info
+            -Dsonar.qualitygate.wait=true
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
