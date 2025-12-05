@@ -18,10 +18,10 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Custom Rule Check (block 'WUE')
+      - name: Custom Rule Check (block 'WhereUElevate')
         run: |
-          if grep -Rni "WUE" .; then
-            echo "❌ Restricted keyword 'WUE' found in code. Failing pipeline."
+          if grep -Rni "WhereUElevate" .; then
+            echo "❌ Restricted keyword 'WhereUElevate' found in code. Failing pipeline."
             exit 1
           else
             echo "✅ No restricted keywords found."
