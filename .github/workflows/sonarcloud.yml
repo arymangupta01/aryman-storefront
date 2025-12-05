@@ -27,7 +27,7 @@ jobs:
 
       # Install dependencies
       - name: Install dependencies
-        run: npm install
+        run: npm install --ignore-scripts
 
       # (Optional) Run tests & generate coverage (only if you add tests)
       - name: Run tests
