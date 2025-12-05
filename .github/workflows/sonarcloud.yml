@@ -18,10 +18,10 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Custom Rule Check (block 'aryman')
+      - name: Custom Rule Check (block 'WUE')
         run: |
-          if grep -Rni "aryman" .; then
-            echo "❌ Restricted keyword 'aryman' found in code. Failing pipeline."
+          if grep -Rni "WUE" .; then
+            echo "❌ Restricted keyword 'WUE' found in code. Failing pipeline."
             exit 1
           else
             echo "✅ No restricted keywords found."
