@@ -8,7 +8,6 @@ import type {
 } from 'storefrontapi.generated';
 import {ProductItem} from '~/components/ProductItem';
 
-const test = "WhereUElevate";
 
 export const meta: Route.MetaFunction = () => {
   return [{title: 'Hydrogen | Home'}];
